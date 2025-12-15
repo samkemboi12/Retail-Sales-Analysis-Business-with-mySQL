@@ -40,10 +40,10 @@ CREATE TABLE retail_sales
 
 ### 2. Data Exploration & Cleaning
 
-- **Record Count**: Determine the total number of records in the dataset.
-- **Customer Count**: Find out how many unique customers are in the dataset.
-- **Category Count**: Identify all unique product categories in the dataset.
-- **Null Value Check**: Check for any null values in the dataset and delete records with missing data.
+-  Check the total number of records in the dataset.
+-  Find out how many unique customers are in the dataset.
+- Identify all unique product categories in the dataset.
+- Check for any null values in the dataset and delete records with missing data.
 
 ```sql
 SELECT COUNT(*) FROM retail_sales;
@@ -74,35 +74,31 @@ FROM retail_sales
 WHERE sale_date = '2022-11-05';
 ```
 
-2. **Write a SQL query to retrieve all transactions where the category is 'Clothing' and the quantity sold is more than 4 in the month of Nov-2022**:
+2. **Write a SQL query to show transactions where category is clothing and quantity is above 4 records for Nov 2022 only**:
 ```sql
-SELECT 
-  *
+SELECT *
 FROM retail_sales
-WHERE 
-    category = 'Clothing'
-    AND 
-    TO_CHAR(sale_date, 'YYYY-MM') = '2022-11'
-    AND
-    quantity >= 4
+WHERE category="clothing" AND
+DATE_FORMAT(sale_date,'%Y-%m')="2022-11" AND
+quantity >=4;
 ```
 
-3. **Write a SQL query to calculate the total sales (total_sale) for each category.**:
+3. **Write a SQL query to calculate the total sales for each category.**:
 ```sql
-SELECT 
-    category,
-    SUM(total_sale) as net_sale,
-    COUNT(*) as total_orders
+SELECT category as Categpry,
+SUM(total_sale) AS net_sale,
+COUNT(*) AS Total_orders
 FROM retail_sales
-GROUP BY 1
+GROUP BY category;
 ```
 
 4. **Write a SQL query to find the average age of customers who purchased items from the 'Beauty' category.**:
 ```sql
-SELECT
-    ROUND(AVG(age), 2) as avg_age
+SELECT ROUND(avg(age),2),
+category
 FROM retail_sales
-WHERE category = 'Beauty'
+WHERE category="Beauty"
+GROUP BY category;
 ```
 
 5. **Write a SQL query to find all transactions where the total_sale is greater than 1000.**:
@@ -111,95 +107,80 @@ SELECT * FROM retail_sales
 WHERE total_sale > 1000
 ```
 
-6. **Write a SQL query to find the total number of transactions (transaction_id) made by each gender in each category.**:
+6. **Write a SQL query to find the total number of transactions made by each gender in each category.**:
 ```sql
-SELECT 
-    category,
-    gender,
-    COUNT(*) as total_trans
+SELECT gender,
+category,
+COUNT(transactions_id) as total_count
 FROM retail_sales
-GROUP 
-    BY 
-    category,
-    gender
-ORDER BY 1
+GROUP BY gender, category
+ORDER BY category;
 ```
 
 7. **Write a SQL query to calculate the average sale for each month. Find out best selling month in each year**:
 ```sql
-SELECT 
-       year,
-       month,
-    avg_sale
-FROM 
-(    
-SELECT 
-    EXTRACT(YEAR FROM sale_date) as year,
-    EXTRACT(MONTH FROM sale_date) as month,
-    AVG(total_sale) as avg_sale,
-    RANK() OVER(PARTITION BY EXTRACT(YEAR FROM sale_date) ORDER BY AVG(total_sale) DESC) as rank
-FROM retail_sales
-GROUP BY 1, 2
-) as t1
-WHERE rank = 1
+SELECT * FROM
+	(
+	SELECT DATE_FORMAT(sale_date, "%Y") as Year,
+	DATE_FORMAT(sale_date, "%m") AS Month,
+    AVG(total_sale) AS Average_sales,
+	RANK() OVER(
+                PARTITION BY DATE_FORMAT(sale_date, "%Y")
+                ORDER BY AVG(total_sale) DESC
+               ) AS RNK
+    FROM retail_sales
+	GROUP BY Year, Month
+		) as ranked_month
+	WHERE RNK = 1;
 ```
 
 8. **Write a SQL query to find the top 5 customers based on the highest total sales **:
 ```sql
-SELECT 
-    customer_id,
-    SUM(total_sale) as total_sales
+SELECT customer_id as Customer,
+SUM(total_sale) as Total_sales
 FROM retail_sales
-GROUP BY 1
-ORDER BY 2 DESC
-LIMIT 5
+GROUP BY customer_id
+ORDER BY Total_sales DESC
+LIMIT 5;
 ```
 
 9. **Write a SQL query to find the number of unique customers who purchased items from each category.**:
 ```sql
-SELECT 
-    category,    
-    COUNT(DISTINCT customer_id) as cnt_unique_cs
+SELECT DISTINCT category,
+COUNT(DISTINCT customer_id)
 FROM retail_sales
-GROUP BY category
+GROUP BY category;
 ```
 
 10. **Write a SQL query to create each shift and number of orders (Example Morning <12, Afternoon Between 12 & 17, Evening >17)**:
 ```sql
-WITH hourly_sale
-AS
-(
-SELECT *,
-    CASE
-        WHEN EXTRACT(HOUR FROM sale_time) < 12 THEN 'Morning'
-        WHEN EXTRACT(HOUR FROM sale_time) BETWEEN 12 AND 17 THEN 'Afternoon'
-        ELSE 'Evening'
-    END as shift
-FROM retail_sales
-)
-SELECT 
-    shift,
-    COUNT(*) as total_orders    
-FROM hourly_sale
-GROUP BY shift
+SELECT SHIFT,
+COUNT(transactions_id)
+FROM
+	(
+		SELECT *,
+			CASE
+			   WHEN HOUR(sale_time)<12 THEN "Morning"
+			   WHEN HOUR(sale_time) between 12 and 17 THEN "Afternoon"
+			   ELSE "Evening" 
+			END AS SHIFT 
+			from retail_sales
+            ) AS shifts
+GROUP BY SHIFT
 ```
 
 ## Findings
-
-- **Customer Demographics**: The dataset includes customers from various age groups, with sales distributed across different categories such as Clothing and Beauty.
+- **Sales Trends**: Monthly analysis shows July 2022 and February 2023 are the months with high sales within the respective year
+- **Customer Demographics**: The data shows that customers from various age groups are represented with average age being 40 years. The are sales distributed across different categories such as Clothing and Beauty.
 - **High-Value Transactions**: Several transactions had a total sale amount greater than 1000, indicating premium purchases.
-- **Sales Trends**: Monthly analysis shows variations in sales, helping identify peak seasons.
-- **Customer Insights**: The analysis identifies the top-spending customers and the most popular product categories.
 
-## Reports
-
-- **Sales Summary**: A detailed report summarizing total sales, customer demographics, and category performance.
-- **Trend Analysis**: Insights into sales trends across different months and shifts.
-- **Customer Insights**: Reports on top customers and unique customer counts per category.
+- **Customer Insights**: The analysis identifies the top-spending customers is customers with Ids 3,5,2,1 spending a total of 38,440 , 30750,  30405 and 25295 respectively.
+- **Category with highest orders**: It is evident from my analysis that there are 3 categories of products from our data. Clothing, Beauty and Electronics. Clothing is on the lead with more orders followed by Electronics and finally beauty
+- **Shift with high sales**: Based on the shifts, it is evident that sales and orders aare high in the evening , followed by morning and afternoon respectively
 
 ## Conclusion
 
-The findings from this project can help drive business decisions by understanding sales patterns, customer behavior, and product performance. Through this project stake holders <br> can understand the performance of the business and managers can make improvemnets where its necessary.
+The findings from this project can help drive business decisions by understanding sales patterns and trends, peak hours and months, customer behavior, and product performance. <br>Through this project stake holders can understand the performance of the business and managers can make improvemnets where necessary such as improving marketing of products with low sales.<br> By identifying the customers with highest sales, managers can ensure that the common purchases by those customers are readily available to maintain the customers. 
 
 ## How to Use
 
