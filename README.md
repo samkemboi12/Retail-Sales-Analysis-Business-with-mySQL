@@ -185,6 +185,6 @@ The findings from this project can help drive business decisions by understandin
 ## How to Use
 
 1. **Clone the Repository**: Clone this project repository from GitHub.
-2. **Run the Queries**: Use the SQL queries provided in the `analysis_queries.sql` file to perform your analysis.
+2. **Run the Queries**: Use the SQL queries provided in the `sales_analysis.sql` file to perform your analysis.
 3. **Explore and Modify**: You can modify the queries to explore different aspects of the dataset or answer additional business questions.
 
