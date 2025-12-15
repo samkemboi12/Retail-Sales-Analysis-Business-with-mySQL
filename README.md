@@ -1,10 +1,7 @@
+
 # Retail Sales Analysis SQL Project
 
 ## Project Overview
-
-**Project Title**: Retail Sales Analysis  
-**Level**: Beginner  
-**Database**: `p1_retail_db`
 
 This project is designed to demonstrate SQL skills and techniques typically used by data analysts to explore, clean, and analyze retail sales data. The project involves setting up a retail sales database, performing exploratory data analysis (EDA), and answering specific business questions through SQL queries. This project is ideal for those who are starting their journey in data analysis and want to build a solid foundation in SQL.
 
@@ -19,11 +16,11 @@ This project is designed to demonstrate SQL skills and techniques typically used
 
 ### 1. Database Setup
 
-- **Database Creation**: The project starts by creating a database named `p1_retail_db`.
+- **Database Creation**: The project starts by creating a database named `sales_db`.
 - **Table Creation**: A table named `retail_sales` is created to store the sales data. The table structure includes columns for transaction ID, sale date, sale time, customer ID, gender, age, product category, quantity sold, price per unit, cost of goods sold (COGS), and total sale amount.
 
 ```sql
-CREATE DATABASE p1_retail_db;
+CREATE DATABASE sales_db;
 
 CREATE TABLE retail_sales
 (
@@ -31,9 +28,9 @@ CREATE TABLE retail_sales
     sale_date DATE,	
     sale_time TIME,
     customer_id INT,	
-    gender VARCHAR(10),
+    gender VARCHAR(15),
     age INT,
-    category VARCHAR(35),
+    category VARCHAR(15),
     quantity INT,
     price_per_unit FLOAT,	
     cogs FLOAT,
@@ -225,3 +222,7 @@ For more content on SQL, data analysis, and other data-related topics, make sure
 - **Discord**: [Join our community to learn and grow together](https://discord.gg/36h5f2Z5PK)
 
 Thank you for your support, and I look forward to connecting with you!
+=======
+# mysql_project
+This repository contains a MySQL-based retail sales analysis project focused on answering key business questions. Using structured SQL queries, the project explores customer behavior, category performance, time-based sales trends, and operational insights (such as shift performance) to support informed retail decision-making.
+>>>>>>> ccc814d135f675567490404ebadc5ed7072fbf41
